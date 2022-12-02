@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://ap.poly.edu.vn/images/favicon.ico">
+    <title>HangNT169</title>
+</head>
+<body>
+<div class="container">
+    <h1 style="text-align: center;margin-top: 5%;">Export Lab/Assignment</h1>
+    <br/>
+    <form th:action="@{/import-mark}" method="POST" enctype="multipart/form-data">
+        <div class="container" style="display: flex;justify-content: center;">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">File Diem</h5>
+                    <input type="file" id="fileLayDiem" name="fileLayDiem" multiple="multiple"
+                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card" style="width: max-content/2">
+                    <div class="card-body">
+                        <h5 class="card-title">Lab</h5>
+                        <input type="file" id="fileLayDiemLab" name="fileLayDiemLab"
+                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card" style="width: max-content/2">
+                    <div class="card-body">
+                        <h5 class="card-title">Quiz</h5>
+                        <input type="file" id="fileLayDiemQuiz" name="fileLayDiemQuiz" multiple="multiple"
+                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-outline-success">Export</button>
+        </div>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>
