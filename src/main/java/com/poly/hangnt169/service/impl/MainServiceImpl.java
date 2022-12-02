@@ -80,195 +80,201 @@ public class MainServiceImpl implements MainService {
         //Phan 1merge diem lab vao list tong
         //B1: Tao map
         Map<String, List<MarkStudent>> mapLabs = new HashMap<>();
-        for (Student s : listLab) {
-            List<MarkStudent> markStudents = new ArrayList<>();
-            if (Objects.nonNull(s.getLab1())) {
-                markStudents.add(new MarkStudent("lab1", s.getLab1()));
-            }
-            if (Objects.nonNull(s.getLab2())) {
-                markStudents.add(new MarkStudent("lab2", s.getLab2()));
-            }
-            if (Objects.nonNull(s.getLab3())) {
-                markStudents.add(new MarkStudent("lab3", s.getLab3()));
-            }
-            if (Objects.nonNull(s.getLab4())) {
-                markStudents.add(new MarkStudent("lab4", s.getLab4()));
-            }
-            if (Objects.nonNull(s.getLab5())) {
-                markStudents.add(new MarkStudent("lab5", s.getLab5()));
-            }
-            if (Objects.nonNull(s.getLab6())) {
-                markStudents.add(new MarkStudent("lab6", s.getLab6()));
-            }
-            if (Objects.nonNull(s.getLab7())) {
-                markStudents.add(new MarkStudent("lab7", s.getLab7()));
-            }
-            if (Objects.nonNull(s.getLab8())) {
-                markStudents.add(new MarkStudent("lab8", s.getLab8()));
-            }
-            if (Objects.nonNull(s.getQuiz1())) {
-                markStudents.add(new MarkStudent("quiz1", s.getQuiz1()));
-            }
-            if (Objects.nonNull(s.getQuiz2())) {
-                markStudents.add(new MarkStudent("quiz2", s.getQuiz2()));
-            }
-            if (Objects.nonNull(s.getQuiz3())) {
-                markStudents.add(new MarkStudent("quiz3", s.getQuiz3()));
-            }
-            if (Objects.nonNull(s.getQuiz4())) {
-                markStudents.add(new MarkStudent("quiz4", s.getQuiz4()));
-            }
-            if (Objects.nonNull(s.getQuiz5())) {
-                markStudents.add(new MarkStudent("quiz5", s.getQuiz5()));
-            }
-            if (Objects.nonNull(s.getQuiz6())) {
-                markStudents.add(new MarkStudent("quiz6", s.getQuiz6()));
-            }
-            if (Objects.nonNull(s.getQuiz7())) {
-                markStudents.add(new MarkStudent("quiz7", s.getQuiz7()));
-            }
-            if (Objects.nonNull(s.getQuiz8())) {
-                markStudents.add(new MarkStudent("quiz8", s.getQuiz8()));
-            }
-            if (Objects.nonNull(s.getAssGD1())) {
-                markStudents.add(new MarkStudent("ass1", s.getAssGD1()));
-            }
-            if (Objects.nonNull(s.getAssGD2())) {
-                markStudents.add(new MarkStudent("ass2", s.getAssGD2()));
-            }
-            mapLabs.put(s.getEmail().toUpperCase(), markStudents);
-        }
-        // B2: Check map.
-        for (int i = 0; i < listMark.size(); i++) {
-            Student student = listMark.get(i);
-            List<MarkStudent> listsMarkStudent = mapLabs.get(student.getEmail().toUpperCase());
-            // ton tai sinh vien trong file diem lab
-            if (Objects.nonNull(listsMarkStudent)) {
-                // update student trong listMark
-                for (MarkStudent markStudent : listsMarkStudent) {
-                    if (markStudent.getTenDiem().equalsIgnoreCase("lab1")) {
-                        student.setLab1(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("lab2")) {
-                        student.setLab2(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("lab3")) {
-                        student.setLab3(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("lab4")) {
-                        student.setLab4(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("lab5")) {
-                        student.setLab5(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("lab6")) {
-                        student.setLab6(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("lab7")) {
-                        student.setLab7(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("lab8")) {
-                        student.setLab8(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz1")) {
-                        student.setQuiz1(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz2")) {
-                        student.setQuiz2(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz3")) {
-                        student.setQuiz3(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz4")) {
-                        student.setQuiz4(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz5")) {
-                        student.setQuiz5(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz6")) {
-                        student.setQuiz6(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz7")) {
-                        student.setQuiz7(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz8")) {
-                        student.setQuiz8(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("ass1")) {
-                        student.setAssGD1(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("ass2")) {
-                        student.setAssGD2(markStudent.getDiem());
-                    }
+        if (Objects.nonNull(listLab)) {
+            for (Student s : listLab) {
+                List<MarkStudent> markStudents = new ArrayList<>();
+                if (Objects.nonNull(s.getLab1())) {
+                    markStudents.add(new MarkStudent("lab1", s.getLab1()));
                 }
-                listMark.set(i, student);
+                if (Objects.nonNull(s.getLab2())) {
+                    markStudents.add(new MarkStudent("lab2", s.getLab2()));
+                }
+                if (Objects.nonNull(s.getLab3())) {
+                    markStudents.add(new MarkStudent("lab3", s.getLab3()));
+                }
+                if (Objects.nonNull(s.getLab4())) {
+                    markStudents.add(new MarkStudent("lab4", s.getLab4()));
+                }
+                if (Objects.nonNull(s.getLab5())) {
+                    markStudents.add(new MarkStudent("lab5", s.getLab5()));
+                }
+                if (Objects.nonNull(s.getLab6())) {
+                    markStudents.add(new MarkStudent("lab6", s.getLab6()));
+                }
+                if (Objects.nonNull(s.getLab7())) {
+                    markStudents.add(new MarkStudent("lab7", s.getLab7()));
+                }
+                if (Objects.nonNull(s.getLab8())) {
+                    markStudents.add(new MarkStudent("lab8", s.getLab8()));
+                }
+                if (Objects.nonNull(s.getQuiz1())) {
+                    markStudents.add(new MarkStudent("quiz1", s.getQuiz1()));
+                }
+                if (Objects.nonNull(s.getQuiz2())) {
+                    markStudents.add(new MarkStudent("quiz2", s.getQuiz2()));
+                }
+                if (Objects.nonNull(s.getQuiz3())) {
+                    markStudents.add(new MarkStudent("quiz3", s.getQuiz3()));
+                }
+                if (Objects.nonNull(s.getQuiz4())) {
+                    markStudents.add(new MarkStudent("quiz4", s.getQuiz4()));
+                }
+                if (Objects.nonNull(s.getQuiz5())) {
+                    markStudents.add(new MarkStudent("quiz5", s.getQuiz5()));
+                }
+                if (Objects.nonNull(s.getQuiz6())) {
+                    markStudents.add(new MarkStudent("quiz6", s.getQuiz6()));
+                }
+                if (Objects.nonNull(s.getQuiz7())) {
+                    markStudents.add(new MarkStudent("quiz7", s.getQuiz7()));
+                }
+                if (Objects.nonNull(s.getQuiz8())) {
+                    markStudents.add(new MarkStudent("quiz8", s.getQuiz8()));
+                }
+                if (Objects.nonNull(s.getAssGD1())) {
+                    markStudents.add(new MarkStudent("ass1", s.getAssGD1()));
+                }
+                if (Objects.nonNull(s.getAssGD2())) {
+                    markStudents.add(new MarkStudent("ass2", s.getAssGD2()));
+                }
+                mapLabs.put(s.getEmail().toUpperCase(), markStudents);
+            }
+            // B2: Check map.
+            for (int i = 0; i < listMark.size(); i++) {
+                Student student = listMark.get(i);
+                List<MarkStudent> listsMarkStudent = mapLabs.get(student.getEmail().toUpperCase());
+                // ton tai sinh vien trong file diem lab
+                if (Objects.nonNull(listsMarkStudent)) {
+                    // update student trong listMark
+                    for (MarkStudent markStudent : listsMarkStudent) {
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab1")) {
+                            student.setLab1(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab2")) {
+                            student.setLab2(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab3")) {
+                            student.setLab3(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab4")) {
+                            student.setLab4(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab5")) {
+                            student.setLab5(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab6")) {
+                            student.setLab6(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab7")) {
+                            student.setLab7(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab8")) {
+                            student.setLab8(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz1")) {
+                            student.setQuiz1(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz2")) {
+                            student.setQuiz2(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz3")) {
+                            student.setQuiz3(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz4")) {
+                            student.setQuiz4(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz5")) {
+                            student.setQuiz5(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz6")) {
+                            student.setQuiz6(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz7")) {
+                            student.setQuiz7(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz8")) {
+                            student.setQuiz8(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("ass1")) {
+                            student.setAssGD1(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("ass2")) {
+                            student.setAssGD2(markStudent.getDiem());
+                        }
+                    }
+                    listMark.set(i, student);
+                }
             }
         }
+
         // Phan 2 merge diem quiz vao list tong
         Map<String, List<MarkStudent>> mapQuiz = new HashMap<>();
-        for (Student s : listQuiz) {
-            List<MarkStudent> markStudents = new ArrayList<>();
-            if (Objects.nonNull(s.getQuiz1())) {
-                markStudents.add(new MarkStudent("quiz1", s.getQuiz1()));
-            }
-            if (Objects.nonNull(s.getQuiz2())) {
-                markStudents.add(new MarkStudent("quiz2", s.getQuiz2()));
-            }
-            if (Objects.nonNull(s.getQuiz3())) {
-                markStudents.add(new MarkStudent("quiz3", s.getQuiz3()));
-            }
-            if (Objects.nonNull(s.getQuiz4())) {
-                markStudents.add(new MarkStudent("quiz4", s.getQuiz4()));
-            }
-            if (Objects.nonNull(s.getQuiz5())) {
-                markStudents.add(new MarkStudent("quiz5", s.getQuiz5()));
-            }
-            if (Objects.nonNull(s.getQuiz6())) {
-                markStudents.add(new MarkStudent("quiz6", s.getQuiz6()));
-            }
-            if (Objects.nonNull(s.getQuiz7())) {
-                markStudents.add(new MarkStudent("quiz7", s.getQuiz7()));
-            }
-            if (Objects.nonNull(s.getQuiz8())) {
-                markStudents.add(new MarkStudent("quiz8", s.getQuiz8()));
-            }
-            mapQuiz.put(s.getEmail().toUpperCase(), markStudents);
-        }
-        for (int i = 0; i < listMark.size(); i++) {
-            Student student = listMark.get(i);
-            List<MarkStudent> listsMarkStudent = mapQuiz.get(student.getEmail().toUpperCase());
-            // ton tai sinh vien trong file diem quiz
-            if (Objects.nonNull(listsMarkStudent)) {
-                // update student trong listMark
-                for (MarkStudent markStudent : listsMarkStudent) {
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz1")) {
-                        student.setQuiz1(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz2")) {
-                        student.setQuiz2(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz3")) {
-                        student.setQuiz3(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz4")) {
-                        student.setQuiz4(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz5")) {
-                        student.setQuiz5(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz6")) {
-                        student.setQuiz6(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz7")) {
-                        student.setQuiz7(markStudent.getDiem());
-                    }
-                    if (markStudent.getTenDiem().equalsIgnoreCase("quiz8")) {
-                        student.setQuiz8(markStudent.getDiem());
-                    }
+        if (Objects.nonNull(listQuiz)) {
+            for (Student s : listQuiz) {
+                List<MarkStudent> markStudents = new ArrayList<>();
+                if (Objects.nonNull(s.getQuiz1())) {
+                    markStudents.add(new MarkStudent("quiz1", s.getQuiz1()));
                 }
-                listMark.set(i, student);
+                if (Objects.nonNull(s.getQuiz2())) {
+                    markStudents.add(new MarkStudent("quiz2", s.getQuiz2()));
+                }
+                if (Objects.nonNull(s.getQuiz3())) {
+                    markStudents.add(new MarkStudent("quiz3", s.getQuiz3()));
+                }
+                if (Objects.nonNull(s.getQuiz4())) {
+                    markStudents.add(new MarkStudent("quiz4", s.getQuiz4()));
+                }
+                if (Objects.nonNull(s.getQuiz5())) {
+                    markStudents.add(new MarkStudent("quiz5", s.getQuiz5()));
+                }
+                if (Objects.nonNull(s.getQuiz6())) {
+                    markStudents.add(new MarkStudent("quiz6", s.getQuiz6()));
+                }
+                if (Objects.nonNull(s.getQuiz7())) {
+                    markStudents.add(new MarkStudent("quiz7", s.getQuiz7()));
+                }
+                if (Objects.nonNull(s.getQuiz8())) {
+                    markStudents.add(new MarkStudent("quiz8", s.getQuiz8()));
+                }
+                mapQuiz.put(s.getEmail().toUpperCase(), markStudents);
+            }
+            for (int i = 0; i < listMark.size(); i++) {
+                Student student = listMark.get(i);
+                List<MarkStudent> listsMarkStudent = mapQuiz.get(student.getEmail().toUpperCase());
+                // ton tai sinh vien trong file diem quiz
+                if (Objects.nonNull(listsMarkStudent)) {
+                    // update student trong listMark
+                    for (MarkStudent markStudent : listsMarkStudent) {
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz1")) {
+                            student.setQuiz1(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz2")) {
+                            student.setQuiz2(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz3")) {
+                            student.setQuiz3(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz4")) {
+                            student.setQuiz4(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz5")) {
+                            student.setQuiz5(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz6")) {
+                            student.setQuiz6(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz7")) {
+                            student.setQuiz7(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("quiz8")) {
+                            student.setQuiz8(markStudent.getDiem());
+                        }
+                    }
+                    listMark.set(i, student);
+                }
             }
         }
+
         // tao file excel luc in ra
         downloadBillingApartmentByMonth(response, listMark);
     }
@@ -436,75 +442,75 @@ public class MainServiceImpl implements MainService {
 
             cell = row.createCell(3);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getAssGD1().isEmpty() ? "0.0" : student.getAssGD1());
+            cell.setCellValue(student.getAssGD1());
 
             cell = row.createCell(4);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getAssGD2().isEmpty() ? "0.0" : student.getAssGD2());
+            cell.setCellValue(student.getAssGD2());
 
             cell = row.createCell(5);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getLab1().isEmpty() ? "0.0" : student.getLab1());
+            cell.setCellValue(student.getLab1());
 
             cell = row.createCell(6);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getLab2().isEmpty() ? "0.0" : student.getLab2());
+            cell.setCellValue(student.getLab2());
 
             cell = row.createCell(7);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getLab3().isEmpty() ? "0.0" : student.getLab3());
+            cell.setCellValue(student.getLab3());
 
             cell = row.createCell(8);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getLab4().isEmpty() ? "0.0" : student.getLab4());
+            cell.setCellValue(student.getLab4());
 
             cell = row.createCell(9);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getLab5().isEmpty() ? "0.0" : student.getLab5());
+            cell.setCellValue(student.getLab5());
 
             cell = row.createCell(10);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getLab6().isEmpty() ? "0.0" : student.getLab6());
+            cell.setCellValue(student.getLab6());
 
             cell = row.createCell(11);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getLab7().isEmpty() ? "0.0" : student.getLab7());
+            cell.setCellValue(student.getLab7());
 
             cell = row.createCell(12);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getLab8().isEmpty() ? "0.0" : student.getLab8());
+            cell.setCellValue(student.getLab8());
 
             cell = row.createCell(13);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getQuiz1().isEmpty() ? "0.0" : student.getQuiz1());
+            cell.setCellValue(student.getQuiz1());
 
             cell = row.createCell(14);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getQuiz2().isEmpty() ? "0.0" : student.getQuiz2());
+            cell.setCellValue(student.getQuiz2());
 
             cell = row.createCell(15);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getQuiz3().isEmpty() ? "0.0" : student.getQuiz3());
+            cell.setCellValue(student.getQuiz3());
 
             cell = row.createCell(16);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getQuiz4().isEmpty() ? "0.0" : student.getQuiz4());
+            cell.setCellValue(student.getQuiz4());
 
             cell = row.createCell(17);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getQuiz5().isEmpty() ? "0.0" : student.getQuiz5());
+            cell.setCellValue(student.getQuiz5());
 
             cell = row.createCell(18);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getQuiz6().isEmpty() ? "0.0" : student.getQuiz6());
+            cell.setCellValue(student.getQuiz6());
 
             cell = row.createCell(19);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getQuiz7().isEmpty() ? "0.0" : student.getQuiz7());
+            cell.setCellValue(student.getQuiz7());
 
             cell = row.createCell(20);
             cell.setCellStyle(style);
-            cell.setCellValue(student.getQuiz8().isEmpty() ? "0.0" : student.getQuiz8());
+            cell.setCellValue(student.getQuiz8());
         }
     }
 
@@ -551,38 +557,38 @@ public class MainServiceImpl implements MainService {
     private Student getStudentFromMark(XSSFSheet worksheet, int index) {
         Student student = new Student();
         XSSFRow row = worksheet.getRow(index);
-        String name = removeAccent(row.getCell(2).getStringCellValue());
-        String mssv = row.getCell(1).getStringCellValue();
+        String name = removeAccent(row.getCell(2).toString());
+        String mssv = row.getCell(1).toString();
         String email = createEmail(name, mssv);
         student.setMssv(mssv);
         student.setTen(name);
         student.setEmail(email);
-        student.setAssGD1(row.getCell(3).getStringCellValue());
-        student.setAssGD2(row.getCell(4).getStringCellValue());
-        student.setLab1(row.getCell(5).getStringCellValue());
-        student.setLab2(row.getCell(6).getStringCellValue());
-        student.setLab3(row.getCell(7).getStringCellValue());
-        student.setLab4(row.getCell(8).getStringCellValue());
-        student.setLab5(row.getCell(9).getStringCellValue());
-        student.setLab6(row.getCell(10).getStringCellValue());
-        student.setLab7(row.getCell(11).getStringCellValue());
-        student.setLab8(row.getCell(12).getStringCellValue());
-        student.setQuiz1(row.getCell(13).getStringCellValue());
-        student.setQuiz2(row.getCell(14).getStringCellValue());
-        student.setQuiz3(row.getCell(15).getStringCellValue());
-        student.setQuiz4(row.getCell(16).getStringCellValue());
-        student.setQuiz5(row.getCell(17).getStringCellValue());
-        student.setQuiz6(row.getCell(18).getStringCellValue());
-        student.setQuiz7(row.getCell(19).getStringCellValue());
-        student.setQuiz8(row.getCell(20).getStringCellValue());
+        student.setAssGD1(row.getCell(3).toString());
+        student.setAssGD2(row.getCell(4).toString());
+        student.setLab1(row.getCell(5).toString());
+        student.setLab2(row.getCell(6).toString());
+        student.setLab3(row.getCell(7).toString());
+        student.setLab4(row.getCell(8).toString());
+        student.setLab5(row.getCell(9).toString());
+        student.setLab6(row.getCell(10).toString());
+        student.setLab7(row.getCell(11).toString());
+        student.setLab8(row.getCell(12).toString());
+        student.setQuiz1(row.getCell(13).toString());
+        student.setQuiz2(row.getCell(14).toString());
+        student.setQuiz3(row.getCell(15).toString());
+        student.setQuiz4(row.getCell(16).toString());
+        student.setQuiz5(row.getCell(17).toString());
+        student.setQuiz6(row.getCell(18).toString());
+        student.setQuiz7(row.getCell(19).toString());
+        student.setQuiz8(row.getCell(20).toString());
         return student;
     }
 
     private Student getStudentFromExcelQuiz(XSSFSheet worksheet, int index, String nameExcel) {
         Student student = new Student();
         XSSFRow row = worksheet.getRow(index);
-        String name = removeAccent(row.getCell(0).getStringCellValue()).substring(5).trim();
-        String email = row.getCell(1).getStringCellValue() + "@fpt.edu.vn";
+        String name = removeAccent(row.getCell(0).toString()).substring(5).trim();
+        String email = row.getCell(1).toString() + "@fpt.edu.vn";
         readQuiz(student, row, nameExcel);
         student.setTen(name);
         student.setEmail(email);
@@ -639,7 +645,7 @@ public class MainServiceImpl implements MainService {
         List<String> headers = new ArrayList<>(listHeader.keySet());
         for (String header : headers) {
             if (header.equalsIgnoreCase("Email Address")) {
-                student.setEmail(row.getCell(listHeader.get(header)).getStringCellValue());
+                student.setEmail(row.getCell(listHeader.get(header)).toString());
             }
             if (header.equalsIgnoreCase("Lab 1")) {
                 student.setLab1(row.getCell(listHeader.get(header)).toString());
