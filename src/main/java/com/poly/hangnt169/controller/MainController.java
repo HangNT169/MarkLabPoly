@@ -31,6 +31,12 @@ public class MainController {
         mainServiceImpl.downloadTemplateMark(response);
     }
 
+    @GetMapping("/download-template-mark-com108")
+    @ResponseBody
+    public void downloadTemplateMarkCom(HttpServletResponse response) {
+        mainServiceImpl.downloadTemplateMarkCOM108(response);
+    }
+
     @PostMapping("/import-mark")
     public String exportMark(@RequestParam("fileLayDiemLab") MultipartFile fileLayDiemLab,
                              @RequestParam("fileLayDiemQuiz") MultipartFile[] fileLayDiemQuiz,
