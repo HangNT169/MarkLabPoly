@@ -276,24 +276,361 @@ public class MainServiceImpl implements MainService {
         }
 
         // tao file excel luc in ra
-        downloadBillingApartmentByMonth(response, listMark);
+        downloadMarkStudent(response, listMark);
     }
 
-    public void downloadBillingApartmentByMonth(HttpServletResponse response, List<Student> students) {
+    @Override
+    public void downloadTemplateMark(HttpServletResponse response) {
         try {
             String fileName = URLEncoder.encode(String.format("MarkStudent.xlsx"), "UTF-8");
             response.setContentType("application/ms-excel; charset=UTF-8");
             String headerValue = String.format("attachment; filename=\"%s\"", fileName);
             response.setHeader(Constants.HEADER_KEY, headerValue);
-            writeBillingApartmentByMonth(response, students);
+            writeMarkStudentTemplate(response);
         } catch (Exception ex) {
             ex.printStackTrace(System.out);
         }
     }
 
-    private void writeBillingApartmentByMonth(HttpServletResponse response, List<Student> students) {
+    @Override
+    public List<Student> readExcelLabCOM108(MultipartFile fileName) throws IOException {
+        if (fileName.isEmpty()) {
+            return null;
+        }
+        List<Student> students = new ArrayList<>();
+        // doc excel
+        XSSFWorkbook workbook = new XSSFWorkbook(fileName.getInputStream());
+        XSSFSheet worksheet = workbook.getSheetAt(0);
+
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            students.add(getStudentFromExcelLab(worksheet, i));
+        }
+        return students;
+    }
+
+    @Override
+    public List<Student> readExcelBaiHocOnlineCOM108(MultipartFile fileName) throws IOException {
+        if (fileName.isEmpty()) {
+            return null;
+        }
+        List<Student> students = new ArrayList<>();
+        // doc excel
+        XSSFWorkbook workbook = new XSSFWorkbook(fileName.getInputStream());
+        XSSFSheet worksheet = workbook.getSheetAt(0);
+
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            students.add(getStudentFromExcelBaiHocOnline(worksheet, i));
+        }
+        return students;
+    }
+
+    @Override
+    public List<Student> readMarkCOM108(MultipartFile fileName) throws IOException {
+        if (fileName.isEmpty()) {
+            return null;
+        }
+        List<Student> students = new ArrayList<>();
+        // doc excel
+        XSSFWorkbook workbook = new XSSFWorkbook(fileName.getInputStream());
+        XSSFSheet worksheet = workbook.getSheetAt(0);
+
+        for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+            students.add(getStudentFromMarkCOM108(worksheet, i));
+        }
+        return students;
+    }
+
+    @Override
+    public void exportExcelCOM108(HttpServletResponse response, List<Student> listMark, List<Student> listLab, List<Student> listQuiz) {
+        //Phan 1merge diem lab vao list tong
+        //B1: Tao map
+        Map<String, List<MarkStudent>> mapLabs = new HashMap<>();
+        if (Objects.nonNull(listLab)) {
+            for (Student s : listLab) {
+                List<MarkStudent> markStudents = new ArrayList<>();
+                if (Objects.nonNull(s.getLab1())) {
+                    markStudents.add(new MarkStudent("lab1", s.getLab1()));
+                }
+                if (Objects.nonNull(s.getLab2())) {
+                    markStudents.add(new MarkStudent("lab2", s.getLab2()));
+                }
+                if (Objects.nonNull(s.getLab3())) {
+                    markStudents.add(new MarkStudent("lab3", s.getLab3()));
+                }
+                if (Objects.nonNull(s.getLab4())) {
+                    markStudents.add(new MarkStudent("lab4", s.getLab4()));
+                }
+                if (Objects.nonNull(s.getQuiz1())) {
+                    markStudents.add(new MarkStudent("baiHocOnline", s.getBaiHocOnline()));
+                }
+                if (Objects.nonNull(s.getAssGD1())) {
+                    markStudents.add(new MarkStudent("ass1", s.getAssGD1()));
+                }
+                if (Objects.nonNull(s.getAssGD2())) {
+                    markStudents.add(new MarkStudent("ass2", s.getAssGD2()));
+                }
+                mapLabs.put(s.getEmail().toUpperCase(), markStudents);
+            }
+            // B2: Check map.
+            for (int i = 0; i < listMark.size(); i++) {
+                Student student = listMark.get(i);
+                List<MarkStudent> listsMarkStudent = mapLabs.get(student.getEmail().toUpperCase());
+                // ton tai sinh vien trong file diem lab
+                if (Objects.nonNull(listsMarkStudent)) {
+                    // update student trong listMark
+                    for (MarkStudent markStudent : listsMarkStudent) {
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab1")) {
+                            student.setLab1(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab2")) {
+                            student.setLab2(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab3")) {
+                            student.setLab3(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("lab4")) {
+                            student.setLab4(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("baiHocOnline")) {
+                            student.setBaiHocOnline(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("ass1")) {
+                            student.setAssGD1(markStudent.getDiem());
+                        }
+                        if (markStudent.getTenDiem().equalsIgnoreCase("ass2")) {
+                            student.setAssGD2(markStudent.getDiem());
+                        }
+                    }
+                    listMark.set(i, student);
+                }
+            }
+        }
+
+        // Phan 2 merge diem quiz vao list tong
+        Map<String, List<MarkStudent>> mapQuiz = new HashMap<>();
+        if (Objects.nonNull(listQuiz)) {
+            for (Student s : listQuiz) {
+                List<MarkStudent> markStudents = new ArrayList<>();
+                if (Objects.nonNull(s.getBaiHocOnline())) {
+                    markStudents.add(new MarkStudent("baiHocOnline", s.getBaiHocOnline()));
+                }
+                mapQuiz.put(s.getEmail().toUpperCase(), markStudents);
+            }
+            for (int i = 0; i < listMark.size(); i++) {
+                Student student = listMark.get(i);
+                List<MarkStudent> listsMarkStudent = mapQuiz.get(student.getEmail().toUpperCase());
+                // ton tai sinh vien trong file diem quiz
+                if (Objects.nonNull(listsMarkStudent)) {
+                    // update student trong listMark
+                    for (MarkStudent markStudent : listsMarkStudent) {
+                        if (markStudent.getTenDiem().equalsIgnoreCase("baiHocOnline")) {
+                            student.setBaiHocOnline(markStudent.getDiem());
+                        }
+                    }
+                    listMark.set(i, student);
+                }
+            }
+        }
+
+        // tao file excel luc in ra
+        downloadMarkStudentCOM(response, listMark);
+    }
+
+    @Override
+    public void downloadTemplateMarkCOM108(HttpServletResponse response) {
+
+    }
+
+    private Student getStudentFromExcelBaiHocOnline(XSSFSheet worksheet, int index) {
+        Student student = new Student();
+        XSSFRow row = worksheet.getRow(index);
+        String email = row.getCell(2).toString() + "@fpt.edu.vn";
+        student.setEmail(email);
+        String markStr = row.getCell(11).toString().replace("%", "").trim();
+        String mark = String.valueOf(Double.valueOf(markStr) * 10);
+        student.setBaiHocOnline(mark);
+        return student;
+    }
+
+    private void writeMarkStudentTemplate(HttpServletResponse response) {
+        try {
+            String fileName = URLEncoder.encode(String.format("TemplateMarkStudent.xlsx"), "UTF-8");
+            response.setContentType("application/ms-excel; charset=UTF-8");
+            String headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            response.setHeader(Constants.HEADER_KEY, headerValue);
+            templateMarkStudentDownload(response);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
+    private void templateMarkStudentDownload(HttpServletResponse response) {
+        try (XSSFWorkbook workbook = new XSSFWorkbook(); OutputStream os = response.getOutputStream()) {
+            createExcelMarkTemplate(workbook);
+            workbook.write(os);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
+    private void createExcelMarkTemplate(XSSFWorkbook workbook) {
+        Sheet sheet = workbook.createSheet("Template Mark Student");
+        sheet.setColumnWidth(1, 25 * 256);
+        sheet.setColumnWidth(2, 25 * 256);
+        sheet.setColumnWidth(3, 25 * 256);
+        sheet.setColumnWidth(4, 25 * 256);
+
+        // Title
+        CellStyle style = workbook.createCellStyle();
+        style.setWrapText(true);
+        XSSFFont font = workbook.createFont();
+        font.setFontName("Arial");
+        font.setBold(true);
+        style.setFont(font);
+
+        // Table
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setWrapText(true);
+
+        font = workbook.createFont();
+        font.setFontName("Times New Roman");
+        headerStyle.setFont(font);
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBorderTop(BorderStyle.THIN);
+        headerStyle.setBorderRight(BorderStyle.THIN);
+        headerStyle.setBorderLeft(BorderStyle.THIN);
+
+        // Set headers
+        Row row = sheet.createRow(0);
+        Cell headerCell = row.createCell(0);
+        headerCell.setCellValue("#");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(1);
+        headerCell.setCellValue("Mã sinh viên");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(2);
+        headerCell.setCellValue("Họ và tên");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(3);
+        headerCell.setCellValue("Đánh giá Assignment GĐ 1 (10%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(4);
+        headerCell.setCellValue("Đánh giá Assignment GĐ 2 (10%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(5);
+        headerCell.setCellValue("Lab 1 (3.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(6);
+        headerCell.setCellValue("Lab 2 (3.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(7);
+        headerCell.setCellValue("Lab 3 (3.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(8);
+        headerCell.setCellValue("Lab 4 (3.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(9);
+        headerCell.setCellValue("Lab 5 (3.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(10);
+        headerCell.setCellValue("Lab 6 (3.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(11);
+        headerCell.setCellValue("Lab 7 (3.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(12);
+        headerCell.setCellValue("Lab 8 (3.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(13);
+        headerCell.setCellValue("Quiz 1 (1.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(14);
+        headerCell.setCellValue("Quiz 2 (1.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(15);
+        headerCell.setCellValue("Quiz 3 (1.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(16);
+        headerCell.setCellValue("Quiz 4 (1.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(17);
+        headerCell.setCellValue("Quiz 5 (1.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(18);
+        headerCell.setCellValue("Quiz 6 (1.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(19);
+        headerCell.setCellValue("Quiz 7 (1.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(20);
+        headerCell.setCellValue("Quiz 8 (1.5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        // Set value
+        style = workbook.createCellStyle();
+        style.setWrapText(true);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+    }
+
+    private void downloadMarkStudent(HttpServletResponse response, List<Student> students) {
+        try {
+            String fileName = URLEncoder.encode(String.format("MarkStudent.xlsx"), "UTF-8");
+            response.setContentType("application/ms-excel; charset=UTF-8");
+            String headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            response.setHeader(Constants.HEADER_KEY, headerValue);
+            writeMarkStudent(response, students);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
+    private void downloadMarkStudentCOM(HttpServletResponse response, List<Student> students) {
+        try {
+            String fileName = URLEncoder.encode(String.format("MarkStudentCOM.xlsx"), "UTF-8");
+            response.setContentType("application/ms-excel; charset=UTF-8");
+            String headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            response.setHeader(Constants.HEADER_KEY, headerValue);
+            writeMarkStudentCOM(response, students);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
+    private void writeMarkStudent(HttpServletResponse response, List<Student> students) {
         try (XSSFWorkbook workbook = new XSSFWorkbook(); OutputStream os = response.getOutputStream()) {
             createExcelMark(workbook, students);
+            workbook.write(os);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
+    private void writeMarkStudentCOM(HttpServletResponse response, List<Student> students) {
+        try (XSSFWorkbook workbook = new XSSFWorkbook(); OutputStream os = response.getOutputStream()) {
+            createExcelMarkCOM(workbook, students);
             workbook.write(os);
         } catch (Exception ex) {
             ex.printStackTrace(System.out);
@@ -514,6 +851,149 @@ public class MainServiceImpl implements MainService {
         }
     }
 
+    private void createExcelMarkCOM(XSSFWorkbook workbook, List<Student> students) {
+        Sheet sheet = workbook.createSheet("Mark StudentCOM");
+        sheet.setColumnWidth(1, 25 * 256);
+        sheet.setColumnWidth(2, 25 * 256);
+        sheet.setColumnWidth(3, 25 * 256);
+        sheet.setColumnWidth(4, 25 * 256);
+
+        // Title
+        CellStyle style = workbook.createCellStyle();
+        style.setWrapText(true);
+        XSSFFont font = workbook.createFont();
+        font.setFontName("Arial");
+        font.setBold(true);
+        style.setFont(font);
+
+        // Table
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setWrapText(true);
+
+        font = workbook.createFont();
+        font.setFontName("Times New Roman");
+        headerStyle.setFont(font);
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBorderTop(BorderStyle.THIN);
+        headerStyle.setBorderRight(BorderStyle.THIN);
+        headerStyle.setBorderLeft(BorderStyle.THIN);
+
+        // Set headers
+        Row row = sheet.createRow(0);
+        Cell headerCell = row.createCell(0);
+        headerCell.setCellValue("#");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(1);
+        headerCell.setCellValue("Mã sinh viên");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(2);
+        headerCell.setCellValue("Họ và tên");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(3);
+        headerCell.setCellValue("Bài học online(10%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(4);
+        headerCell.setCellValue("Chuyên cần (4%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(5);
+        headerCell.setCellValue("Đánh giá Assignment GĐ 1 (10%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(6);
+        headerCell.setCellValue("Đánh giá Assignment GĐ 2 (10%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(7);
+        headerCell.setCellValue("Lab 1 (5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(8);
+        headerCell.setCellValue("Lab 2 (5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(9);
+        headerCell.setCellValue("Lab 3 (5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(10);
+        headerCell.setCellValue("Lab 4 (5%)");
+        headerCell.setCellStyle(headerStyle);
+
+        headerCell = row.createCell(11);
+        headerCell.setCellValue("Tham gia bài giảng (6%)");
+        headerCell.setCellStyle(headerStyle);
+
+        // Set value
+        style = workbook.createCellStyle();
+        style.setWrapText(true);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+
+        //Doc noi dung
+        int i = 1;
+
+        for (Student student : students) {
+            int index = i;
+            row = sheet.createRow(i++);
+            Cell cell = row.createCell(0);
+
+            cell.setCellStyle(style);
+            cell.setCellValue(index++);
+
+            cell = row.createCell(1);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getMssv());
+
+            cell = row.createCell(2);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getTen());
+
+            cell = row.createCell(3);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getBaiHocOnline());
+
+            cell = row.createCell(4);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getChuyenCan());
+
+            cell = row.createCell(5);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getAssGD1());
+
+            cell = row.createCell(6);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getAssGD2());
+
+            cell = row.createCell(7);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getLab1());
+
+            cell = row.createCell(8);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getLab2());
+
+            cell = row.createCell(9);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getLab3());
+
+            cell = row.createCell(10);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getLab4());
+
+            cell = row.createCell(11);
+            cell.setCellStyle(style);
+            cell.setCellValue(student.getThamGiaBaiGiang());
+
+        }
+    }
+
     private void readAFileQuiz(List<Student> students, MultipartFile fileName) throws IOException {
         XSSFWorkbook workbook = new XSSFWorkbook(fileName.getInputStream());
         XSSFSheet worksheet = workbook.getSheetAt(0);
@@ -702,6 +1182,27 @@ public class MainServiceImpl implements MainService {
                 student.setAssGD2(row.getCell(listHeader.get(header)).toString());
             }
         }
+        return student;
+    }
+
+    private Student getStudentFromMarkCOM108(XSSFSheet worksheet, int index) {
+        Student student = new Student();
+        XSSFRow row = worksheet.getRow(index);
+        String name = removeAccent(row.getCell(2).toString());
+        String mssv = row.getCell(1).toString();
+        String email = createEmail(name, mssv);
+        student.setMssv(mssv);
+        student.setTen(name);
+        student.setEmail(email);
+        student.setBaiHocOnline(row.getCell(3).toString());
+        student.setChuyenCan(row.getCell(4).toString());
+        student.setAssGD1(row.getCell(5).toString());
+        student.setAssGD2(row.getCell(6).toString());
+        student.setLab1(row.getCell(7).toString());
+        student.setLab2(row.getCell(8).toString());
+        student.setLab3(row.getCell(9).toString());
+        student.setLab4(row.getCell(10).toString());
+        student.setThamGiaBaiGiang(row.getCell(11).toString());
         return student;
     }
 

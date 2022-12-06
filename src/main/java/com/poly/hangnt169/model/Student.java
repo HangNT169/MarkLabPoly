@@ -36,5 +36,8 @@ public class Student {
     private String quiz6;
     private String quiz7;
     private String quiz8;
+    private String baiHocOnline;
+    private String chuyenCan;
+    private String thamGiaBaiGiang;
 
 }

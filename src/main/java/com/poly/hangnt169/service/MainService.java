@@ -17,4 +17,15 @@ public interface MainService {
 
     void exportExcel(HttpServletResponse response,List<Student> listMark, List<Student> listLab, List<Student> listQuiz);
 
+    void downloadTemplateMark(HttpServletResponse response);
+
+    List<Student> readExcelLabCOM108(MultipartFile fileName) throws IOException;
+
+    List<Student> readExcelBaiHocOnlineCOM108(MultipartFile fileName) throws IOException;
+
+    List<Student> readMarkCOM108(MultipartFile fileName) throws IOException;
+
+    void exportExcelCOM108(HttpServletResponse response,List<Student> listMark, List<Student> listLab, List<Student> listQuiz);
+
+    void downloadTemplateMarkCOM108(HttpServletResponse response);
 }
